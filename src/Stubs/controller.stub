@@ -1,0 +1,123 @@
+<?php
+
+namespace App\Http\Controllers\Admin;
+
+use App\Http\Controllers\Controller;
+use Illuminate\Http\Request;
+use App\Company;
+use App\{{TableName}};
+use Illuminate\Http\File;
+use Illuminate\Support\Facades\Storage;
+class {{TableNames}}Controller extends Controller
+{
+    /**
+     * Display a listing of the resource.
+     *
+     * @return \Illuminate\Http\Response
+     */
+    public function index()
+    {
+    ${{table_names}} = {{TableName}}::{{paginate}};
+    return view('{{table_name}}.index',compact('{{table_names}}'));
+
+    }
+     public function search(Request $request)
+    {
+        $q=$request->input('q');
+${{table_names}} = {{TableName}}::where('emails', 'LIKE','%'.$q.'%')->orWhere('message', 'LIKE','%'.$q.'%')->orWhere('subject', 'LIKE','%'.$q.'%')->{{paginate}};
+ 
+return view('{{table_name}}.search',compact('{{table_names}}','q'));
+
+    }
+
+    /**
+     * Show the form for creating a new resource.
+     *
+     * @return \Illuminate\Http\Response
+     */
+    public function create()
+    {
+        
+    return view('{{table_name}}.create',compact('emails'));
+    }
+
+    /**
+     * Store a newly created resource in storage.
+     *
+     * @param  \Illuminate\Http\Request  $request
+     * @return \Illuminate\Http\Response
+     */
+    public function store(Request $request)
+    {
+
+        $request->validate([{{validate}}]);
+        ${{table_name}}=New {{TableName}};
+        $this->table($request, ${{table_name}});
+        alert()->success('New {{Table Name}} Created', 'Success')->persistent('ok');
+        return redirect(url('{{table_names}}'));
+    }
+
+
+    /**
+     * Display the specified resource.
+     *
+     * @param  int  $id
+     * @return \Illuminate\Http\Response
+     */
+    public function show($id)
+    {
+        ${{table_name}} = {{TableName}}::find($id);
+        return view('{{table_name}}.show',compact('{{table_name}}'));
+    }
+
+    /**
+     * Show the form for editing the specified resource.
+     *
+     * @param  int  $id
+     * @return \Illuminate\Http\Response
+     */
+    public function edit($id)
+    {
+            ${{table_name}} = {{TableName}}::find($id);
+            return view('{{table_name}}.edit',compact('{{table_name}}'));
+
+
+    }
+
+    /**
+     * Update the specified resource in storage.
+     *
+     * @param  \Illuminate\Http\Request  $request
+     * @param  int  $id
+     * @return \Illuminate\Http\Response
+     */
+    public function update(Request $request, $id)
+    {
+        $request->validate([{{validate}}]);
+        ${{table_name}}={{TableName}}::find($id);
+        $this->table($request, ${{table_name}});
+        alert()->success('Item Edited', 'Success')->persistent('ok');
+        return back();
+
+    }
+
+    /**
+     * Remove the specified resource from storage.
+     *
+     * @param  int  $id
+     * @return \Illuminate\Http\Response
+     */
+    public function destroy($id)
+    {
+        ${{table_name}} = {{TableName}}::find($id);
+        {{file_delete}}
+        ${{table_name}}->delete();
+        return redirect(url('admin/{{table_names}}'));
+    }
+
+
+
+    protected function table(Request $request, {{TableName}} ${{table_name}}){
+        {{fields_code}}
+    }
+}

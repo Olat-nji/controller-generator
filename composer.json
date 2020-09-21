@@ -1,0 +1,32 @@
+{
+    "name": "olat-nji/controller-generator",
+    "description": "Laravel Package that helps Ease up the task of generating controllers with similar code structure",
+    "keywords": [
+        "laravel",
+        "crud",
+        "generator",
+        "Controller Generator"
+    ],
+    "license": "MIT",
+    "authors": [{
+        "name": "Olayemi Olatunji",
+        "email": "olayemi289@gmail.com"
+    }],
+    "require": {
+        "php": "^7.3",
+        "doctrine/dbal": "^2.11",
+        "uxweb/sweet-alert": "^2.0"
+    },
+    "require-dev": {},
+    "autoload": {
+        "psr-4": {
+            "Olatunji\\ControllerGenerator\\": "src/"
+        },
+        "files": [
+            "src/Stubs/controller.stub"
+        ]
+    },
+    "extra": {
+
+    }
+}
