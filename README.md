@@ -1,4 +1,4 @@
-# Laravel Admin Panel
+# Laravel CRUD Controller Generator
 Laravel Package that helps Ease up the task of generating controllers with similar code structure
 
 ### Requirements
