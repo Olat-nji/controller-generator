@@ -15,7 +15,7 @@ class ControllerCommand extends Command
      *
      * @var string
      */
-    protected $signature = 'controller:generate {tables* : Names of tables which Controllers are to be generated for} {--nofiles : Specifies if fields do not contain files}';
+    protected $signature = 'controller:generate {tables* : Names of tables which Controllers are to be generated for} {--nofiles : Specifies if fields do not contain files} {--namespace="default" : Namespace where controllers are to be generated to }';
 
     /**
      * The console command description.
@@ -46,6 +46,7 @@ class ControllerCommand extends Command
         foreach($this->argument('tables') as $table){
             
             if(Schema::hasTable($table)){
+                $namespace=($this->option('namespace')=='default')?'':ucwords($this->option('namespace')."/");
                 if($this->option('nofiles')==''){
                 
                 $colw=DB::getSchemaBuilder()->getColumnListing($table);
@@ -133,7 +134,10 @@ class ControllerCommand extends Command
                 $stub = str_replace('{{search_fields}}','',$stub);
                 $stub = str_replace('{{other_search_options}}','',$stub);
                 $Template = $this->template($table,$stub,'table');
-                file_put_contents(app_path("Http/Controllers/".$table_name['StringNames'].'Controller.php'), $Template);
+                if(!file_exists(app_path("Http/Controllers/".$namespace))){
+                    mkdir(app_path("Http/Controllers/".$namespace));
+                }
+                file_put_contents(app_path("Http/Controllers/".$namespace.$table_name['StringNames'].'Controller.php'), $Template);
                 
             }else{
                 $this->error('Table '.$table.' does not exist'); 
@@ -145,20 +149,26 @@ class ControllerCommand extends Command
             $this->line(ucwords($table).' Controller Created ...');
         }
         
-        $this->initUxwebSweetAlert();
-        // $password = $this->secret('What is the password?');
-        // $name = $this->choice('What is your name?', ['Taylor', 'Dayle'], 0);
-        // $this->confirm('Do you wish to continue?');
-        // $this->info('Display this on the screen');
-        // $this->error('Display this on the screen');
-        // $this->line('Display this on the screen');
-        return 0;
+        $this->initUxwebSweetAlert($namespace);
+        
+        return 1;
     }
 
-    protected function initUxwebSweetAlert(){
+    protected function initUxwebSweetAlert($namespace){
         $app_file=file_get_contents(config_path('app.php'));
         $serviceProvider='UxWeb\SweetAlert\SweetAlertServiceProvider::class';
         $alias=" 'Alert' => UxWeb\SweetAlert\SweetAlert::class,";
+        $viewLayout=resource_path('views/'.$namespace.'app.blade.php');
+        if(file_exists($viewLayout)){
+            $view =file_get_contents($viewLayout);
+            if(strpos($view,'@include("sweet::alert")')==false){
+            $view=str_replace('</head>','<script src="https://unpkg.com/sweetalert/dist/sweetalert.min.js"></script>
+            </head>',$view);
+            $view=str_replace('<body>','<body>
+            @include("sweet::alert")',$view);
+            file_put_contents($viewLayout,$view);
+        }
+        }
         if(strpos($app_file,$serviceProvider)==false && strpos($app_file,$alias)==false){
             $this->line('Initializing uxweb/sweet-alert in config/app.php');
         $app_file=str_replace('App\Providers\RouteServiceProvider::class','App\Providers\RouteServiceProvider::class,
@@ -173,13 +183,19 @@ $this->info('uxweb/sweet-alert initialized');
     }
 
 
+    
     protected function initSpatieSearchable($table){
 
-        if(directoryExists(app_path('/Models'))){
+        if(file_exists(app_path('/Models'))){
+            
             $this->line('Initializing spatie/laravel-searchable in Model '.$this->string($table)['StringName'].'.php');
             $filedir=app_path('/Models/'.$this->string($table)['StringName'].'.php');
             function replacemodel($filedir,$table){
+
                 $model =file_get_contents($filedir);
+
+                if(strpos($model,'use Spatie\Searchable\Searchable;')==false){
+                    $model =   str_replace('extends Model','extends Model implements Searchable',$model);
                 $find ='}';
                 $replace='
                 
@@ -203,6 +219,7 @@ $this->info('uxweb/sweet-alert initialized');
     $result = str_replace('namespace App\Models;',$rep,$result);
                 file_put_contents($filedir,$result);
              }
+            }
                         if(file_exists($filedir)){
                             replacemodel($filedir,$table);
              }else{
