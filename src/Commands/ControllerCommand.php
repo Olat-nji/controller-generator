@@ -1,13 +1,14 @@
 <?php
 
-namespace App\Console\Commands;
+namespace Olatunji\ControllerGenerator;
 
 use Illuminate\Console\Command;
-use Illuminate\Support\Facades\Artisan;
 use Illuminate\Support\Facades\DB;
 use Illuminate\Support\Facades\Schema;
 use Illuminate\Support\Str;
-class CrudCommand extends Command
+
+
+class ControllerCommand extends Command
 {
     /**
      * The name and signature of the console command.

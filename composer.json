@@ -23,10 +23,14 @@
             "Olatunji\\ControllerGenerator\\": "src/"
         },
         "files": [
-            "src/Stubs/controller.stu"
+
         ]
     },
     "extra": {
-
+        "laravel": {
+            "providers": [
+                "Olatunji\\ControllerGenerator\\ControllerGeneratorServiceProvider"
+            ]
+        }
     }
 }
