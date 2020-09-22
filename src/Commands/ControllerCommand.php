@@ -42,11 +42,12 @@ class ControllerCommand extends Command
     public function handle()
     {
         $this->info('Your Majesty!');
-    
+        $this->line('Beginning the process Your Greatness ...');
         foreach($this->argument('tables') as $table){
+            
             if(Schema::hasTable($table)){
                 if($this->option('nofiles')==''){
-                $this->line("Creating Controller for ".ucwords($table).' ...');
+                
                 $colw=DB::getSchemaBuilder()->getColumnListing($table);
                 $donotinclude =['id','created_at','updated_at'];
                 $colw=array_diff($colw,$donotinclude);
@@ -114,7 +115,14 @@ class ControllerCommand extends Command
                             $required = ($notNull==true)?'required':'nullable';
                             $validate = '"'.$column->getName().'"=>"'.$required.'|max:'.$length.'",';
                             $stub = str_replace('{{validate}}',$validate.'
-                            {{validate}}',$stub);   
+                            {{validate}}',$stub);  
+                            $stub = str_replace('{{search_fields}}','"'.$column->getName().'",{{search_fields}}',$stub);  
+                             $other_search_options='else if($k=="'.$column->getName().'"){
+                                $res=(new Search())
+                                        ->registerModel(Attribute::class,["'.$column->getName().'"])->search($query);
+                            }';
+                            $stub = str_replace('{{other_search_options}}',$other_search_options.
+                            '{{other_search_options}}',$stub);  
                 }
                 
                 $table_name =$this->string($table);
@@ -122,15 +130,22 @@ class ControllerCommand extends Command
                 $stub = str_replace('{{fields_code}}','${{table_name}}->save();',$stub);
                 $stub = str_replace('{{validate}}','',$stub);
                 $stub = str_replace('{{file_delete}}','',$stub);
+                $stub = str_replace('{{search_fields}}','',$stub);
+                $stub = str_replace('{{other_search_options}}','',$stub);
                 $Template = $this->template($table,$stub,'table');
                 file_put_contents(app_path("Http/Controllers/".$table_name['StringNames'].'Controller.php'), $Template);
                 
             }else{
                 $this->error('Table '.$table.' does not exist'); 
             }
+            
+            $this->line("Creating Controller for ".ucwords($table).' ...');
+            $this->initSpatieSearchable($table);
+
             $this->line(ucwords($table).' Controller Created ...');
         }
         
+        $this->initUxwebSweetAlert();
         // $password = $this->secret('What is the password?');
         // $name = $this->choice('What is your name?', ['Taylor', 'Dayle'], 0);
         // $this->confirm('Do you wish to continue?');
@@ -138,6 +153,65 @@ class ControllerCommand extends Command
         // $this->error('Display this on the screen');
         // $this->line('Display this on the screen');
         return 0;
+    }
+
+    protected function initUxwebSweetAlert(){
+        $app_file=file_get_contents(config_path('app.php'));
+        $serviceProvider='UxWeb\SweetAlert\SweetAlertServiceProvider::class';
+        $alias=" 'Alert' => UxWeb\SweetAlert\SweetAlert::class,";
+        if(strpos($app_file,$serviceProvider)==false && strpos($app_file,$alias)==false){
+            $this->line('Initializing uxweb/sweet-alert in config/app.php');
+        $app_file=str_replace('App\Providers\RouteServiceProvider::class','App\Providers\RouteServiceProvider::class,
+        '.$serviceProvider,$app_file);
+        $app_file=str_replace("'App' => Illuminate\Support\Facades\App::class,","
+       ".$alias."
+        'App' => Illuminate\Support\Facades\App::class,",$app_file);
+file_put_contents(config_path('app.php'),$app_file);
+$this->info('uxweb/sweet-alert initialized');        
+}
+        
+    }
+
+
+    protected function initSpatieSearchable($table){
+
+        if(directoryExists(app_path('/Models'))){
+            $this->line('Initializing spatie/laravel-searchable in Model '.$this->string($table)['StringName'].'.php');
+            $filedir=app_path('/Models/'.$this->string($table)['StringName'].'.php');
+            function replacemodel($filedir,$table){
+                $model =file_get_contents($filedir);
+                $find ='}';
+                $replace='
+                
+                public function getSearchResult() : SearchResult
+                {
+                    $url = route("'.$table.'/search?q=", $this->slug);
+                    return new SearchResult(
+                        $this,
+                        $this->id,
+                        $url
+                    );
+                } 
+            }
+                ';
+                $result = strrev(preg_replace(strrev("/$find/"),strrev($replace),strrev($model),1));
+    $rep = 
+    'namespace App\Models;
+    
+    use Spatie\Searchable\Searchable;
+    use Spatie\Searchable\SearchResult;';
+    $result = str_replace('namespace App\Models;',$rep,$result);
+                file_put_contents($filedir,$result);
+             }
+                        if(file_exists($filedir)){
+                            replacemodel($filedir,$table);
+             }else{
+                 $this->error('No Model found for '.$table);
+                $this->call('make:model',['name'=>$this->string($table)['StringName']]);
+                replacemodel($filedir,$table);
+             }
+             $this->info('spatie/laravel-searchable initialized');
+        }
     }
 
     protected function string($string) {

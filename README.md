@@ -9,7 +9,7 @@ Laravel Package that helps Ease up the task of generating controllers with simil
 - Generate Controller with pre-written --resource code
 - Validate Incoming requests in Store And Update
 - File Upload 
-- Packed with [uxweb-sweet-alert](https://github.com/uxweb/sweet-alert)
+- Packed with [uxweb/sweet-alert](https://github.com/uxweb/sweet-alert)
 - Search function implemented with [spatie/laravel-searchable](https://github.com/spatie/laravel-searchable)
  
 

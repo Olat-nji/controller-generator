@@ -8,6 +8,7 @@ use App\Company;
 use App\{{TableName}};
 use Illuminate\Http\File;
 use Illuminate\Support\Facades\Storage;
+use Spatie\Searchable\Search;
 class {{TableNames}}Controller extends Controller
 {
     /**
@@ -23,10 +24,54 @@ class {{TableNames}}Controller extends Controller
     }
      public function search(Request $request)
     {
-        $q=$request->input('q');
-${{table_names}} = {{TableName}}::where('emails', 'LIKE','%'.$q.'%')->orWhere('message', 'LIKE','%'.$q.'%')->orWhere('subject', 'LIKE','%'.$q.'%')->{{paginate}};
+
+        $final={{TableName}}::orderBy('id','desc')->where('name','fgdh')->get();
+        $queries= $request->all();
+        ${{table_names}} ={{TableName}}::orderBy('id','desc')->get();
+        foreach($queries as $k=>$query){
+        if($query!=''){
+             if($k=='q'){
+                $que=explode(' ',$query);            
+                $res=(new Search())
+                        ->registerModel({{TableName}}::class,[{{search_fields}}])->search($query);
+                        foreach($que as $q){
+                    
+                            $results=(new Search())
+                            ->registerModel({{TableName}}::class,[{{search_fields}}])
+                            $res = $res->merge($results);
+                        
+                        }
+            }{{other_search_options}}
+            
+                
+
+
+                
+                $results = $res->unique()->groupByType();
+              
+                $reso=collect();
+                
+                
+                foreach ($results as $key => $va) {
+                    
+                    foreach ($va as $ke => $val) {
+                        $value=$val->searchable;
+                        $reso=$reso->push($value);
+                                        
+                    }
+                }
+                $final=$final->merge($reso);
+                ${{table_names}}=$final->unique();
+               }
+            }    
+
+                
+       ${{table_names}}=     ${{table_names}}->paginate(12);
+
+                
+    
  
-return view('{{table_name}}.search',compact('{{table_names}}','q'));
+return view('{{table_name}}.search',compact('{{table_names}}'));
 
     }
 
