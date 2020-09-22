@@ -2,7 +2,7 @@
 Laravel Package that helps Ease up the task of generating controllers with similar code structure
 
 ### Requirements
-    Laravel >=5.5
+    Laravel >=8.0
     PHP >= 7.3
 
 ## Features
@@ -19,17 +19,17 @@ Laravel Package that helps Ease up the task of generating controllers with simil
     ```
     composer require olat-nji/controller-generator
     ```
-
+    
 2. Create your controllers.
     ```
     php artisan controller:generate blog students
     ```
     ```
-    php artisan controller:generate quotes --noimage
+    php artisan controller:generate quotes --noimage --namespace=admin
     ```
     > Service provider will be discovered automatically.
 
-3. Follow instructions for uxweb and laravel-searchable
+3. Uxweb/Sweetalert and Spatie/laravel-searchable are automatically integrated
   
 
 
