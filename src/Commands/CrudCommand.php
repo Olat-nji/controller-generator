@@ -14,7 +14,7 @@ class CrudCommand extends Command
      *
      * @var string
      */
-    protected $signature = 'crud:generate {tables* : Names of tables which Controllers are to be generated for} {--nofiles : Specifies if fields do not contain files}';
+    protected $signature = 'controller:generate {tables* : Names of tables which Controllers are to be generated for} {--nofiles : Specifies if fields do not contain files}';
 
     /**
      * The console command description.
@@ -65,13 +65,14 @@ class CrudCommand extends Command
                 }
             }
                 $columns=[];
-                $stub = file_get_contents(__DIR__ . '/../../Stubs/controller.stub');
+                $stub = file_get_contents(__DIR__ . '/../../Stubs/controller.stu');
                 $cols=array_diff($colw,$files);
                 foreach ($files as $key => $column) {
                     $column = Schema::getConnection()->getDoctrineColumn($table,$column);
                     $type=$column->getType();
                     $notNull=$column->getNotnull();
                     $length=$column->getLength();
+
                     $replacement='
                     if($request->hasFile("'.$column->getName().'")){
                     $fileNameWithExt=$request->file("'.$column->getName().'")->getClientOriginalName();
