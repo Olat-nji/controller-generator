@@ -9,8 +9,8 @@ Laravel Package that helps Ease up the task of generating controllers with simil
 - Generate Controller with pre-written --resource code
 - Validate Incoming requests in Store And Update
 - File Upload 
-- Packed with ![uxweb-sweet-alert](https://github.com/uxweb/sweet-alert)
-- Search function implemented with ![spatie/laravel-searchable](https://github.com/spatie/laravel-searchable)
+- Packed with [uxweb-sweet-alert](https://github.com/uxweb/sweet-alert)
+- Search function implemented with [spatie/laravel-searchable](https://github.com/spatie/laravel-searchable)
  
 
 ## Installation
@@ -25,7 +25,7 @@ Laravel Package that helps Ease up the task of generating controllers with simil
     php artisan controller:generate blog students
     ```
     ```
-    php artisan controller:generate blog students --noimage
+    php artisan controller:generate quotes --noimage
     ```
     > Service provider will be discovered automatically.
 
