@@ -6,34 +6,34 @@ Laravel Package that helps Ease up the task of generating controllers with simil
     PHP >= 7.3
 
 ## Features
-- Generate Controller
-<!-- 
+- Generate Controller with pre-written --resource code
+- Validate Incoming requests in Store And Update
+- File Upload 
+- Packed with ![uxweb-sweet-alert](https://github.com/uxweb/sweet-alert)
+- Search function implemented with ![spatie/laravel-searchable](https://github.com/spatie/laravel-searchable)
+ 
 
 ## Installation
 
 1. Run
     ```
-    composer require appzcoder/laravel-admin
+    composer require olat-nji/controller-generator
     ```
 
-2. Install the admin package.
+2. Create your controllers.
     ```
-    php artisan laravel-admin:install
+    php artisan controller:generate blog students
+    ```
+    ```
+    php artisan controller:generate blog students --noimage
     ```
     > Service provider will be discovered automatically.
-3. Make sure your user model's has a ```HasRoles``` trait **app/User.php**.
-    ```php
-    class User extends Authenticatable
-    {
-        use Notifiable, HasRoles;
 
-        ...
-    ```
-
-4. You can generate CRUD easily through generator tool now.
+3. Follow instructions for uxweb and laravel-searchable
+  
 
 
-## Usage
+<!-- ## Usage
 
 1. Create some permissions.
 
@@ -73,12 +73,12 @@ Laravel Package that helps Ease up the task of generating controllers with simil
         // Do something
     }
     ```
+ -->
 
-Learn more about ACL from [here](https://laravel.com/docs/master/authorization)
 
-For activity log please read `spatie/laravel-activitylog` [docs](https://docs.spatie.be/laravel-activitylog/v2/introduction)
+<!-- For activity log please read `spatie/laravel-activitylog` [docs](https://docs.spatie.be/laravel-activitylog/v2/introduction) -->
 
-## Screenshots
+<!-- ## Screenshots
 
 ![users](https://user-images.githubusercontent.com/1708683/43477093-1ac08d42-951c-11e8-8217-00aedc19b28d.png)
 
@@ -87,11 +87,11 @@ For activity log please read `spatie/laravel-activitylog` [docs](https://docs.sp
 ![generator](https://user-images.githubusercontent.com/1708683/43477174-5381d15e-951c-11e8-9f86-2e45acd38f08.png)
 
 ![settings](https://user-images.githubusercontent.com/1708683/43679408-67b724d0-9846-11e8-8eb0-49e04c449ee3.png)
-
+ -->
 ## Author
 
-[Sohel Amin](http://www.sohelamin.com) :email: [Email Me](mailto:sohelamincse@gmail.com)
+[Olatunji Olayemi](http://cognitiveinc.xyz) :email: [Email Me](mailto:olayemi289@gmail.com)
 
 ## License
 
-This project is licensed under the MIT License - see the [License File](LICENSE) for details -->
+This project is licensed under the MIT License - see the [License File](LICENSE) for details
