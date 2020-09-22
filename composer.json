@@ -23,7 +23,7 @@
             "Olatunji\\ControllerGenerator\\": "src/"
         },
         "files": [
-            "src/Stubs/controller.stub"
+            "src/Stubs/controller.stu"
         ]
     },
     "extra": {
