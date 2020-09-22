@@ -66,7 +66,7 @@ class ControllerCommand extends Command
                 }
             }
                 $columns=[];
-                $stub = file_get_contents(__DIR__ . '/../../Stubs/controller.stu');
+                $stub = file_get_contents(__DIR__ . '/../../Stubs/controller.stub');
                 $cols=array_diff($colw,$files);
                 foreach ($files as $key => $column) {
                     $column = Schema::getConnection()->getDoctrineColumn($table,$column);
